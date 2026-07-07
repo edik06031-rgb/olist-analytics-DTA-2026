@@ -75,3 +75,12 @@ LEFT JOIN product_category_name_translation t USING (product_category)
 GROUP BY category_en
 HAVING reviews > 50
 ORDER BY avg_score DESC;
+
+-- середній час доставки (різниця між датою купівлі і датою доставки); 
+
+SELECT
+	round(avg(julianday(order_delivered_6) - julianday(order_purchase_t)), 1) As avg_delivery_days
+
+FROM olist_orders_dataset
+WHERE order_status = 'delivered' AND order_delivered_6 is not NULL;
+
