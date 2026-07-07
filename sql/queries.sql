@@ -23,6 +23,11 @@ WHERE order_status = 'delivered';
 
 
 - Місячний виторг і кількість замовлень
+- Виторг зростає** протягом 2017-2018 зі стабільним трендом (~41.6К приросту щомісяця на
+  стабільному періоді 2017-01 → 2018-08, R² ≈ 0.815).
+- Листопад — сплеск понад тренд** (Black Friday в Бразилії): найбільше позитивне відхилення
+  виторгу від лінії тренду серед усіх календарних місяців.
+	
 SELECT
 	strftime('%Y-%m', o.order_purchase_t) AS ym,
     ROUND(SUM(oi.price), 2) AS revenue,
@@ -35,6 +40,19 @@ ORDER BY ym;
 
 -- розвідувальні запити
 -- топ 10 категорій за виторгом
+
+1. Health_beaty
+2. watches_gifts
+3.bad_bath_table
+4.sports_leisure
+5. computers_accessories
+6. furniture_decor
+7. hausewares
+8.cool_stuff
+9. auto
+10. toys
+
+	
 SELECT
 	t.product_category_1 AS category_en,
     round(sum(oi.price), 2) AS revenue
@@ -49,6 +67,9 @@ ORDER by revenue DESC
 LIMIT 10;
 
 -- виторг за штатами (для карти в Tableau)
+-- тройка лідерів штати SP,RJ,MG
+
+	
 SELECT
 	cu.customer_state,
     ROUND(SUM(oi.price), 2) AS revenue,
@@ -62,6 +83,8 @@ ORDER BY revenue DESC;
 
 
 --      середня оцінка (review_score) за категоріями
+
+-- середня оцінка по категоріям від 3.49 до 4.45
 
 SELECT
 	t.product_category_1 AS category_en,
@@ -78,6 +101,10 @@ ORDER BY avg_score DESC;
 
 -- середній час доставки (різниця між датою купівлі і датою доставки); 
 
+-- Північні штати** (Roraima, Amapá, Amazonas, Alagoas, Pará, Maranhão) мають найдовшу доставку
+  (22-29 днів проти ~12.6 в середньому) і помітно нижчі оцінки покупців — операційна проблема,
+  яку можна виправити логістикою, без зміни асортименту.
+
 SELECT
 	round(avg(julianday(order_delivered_6) - julianday(order_purchase_t)), 1) As avg_delivery_days
 
@@ -87,6 +114,7 @@ WHERE order_status = 'delivered' AND order_delivered_6 is not NULL;
 
 --  розподіл способів оплати. 
 -- ми бачимо що способ оплати кредитною картою наймассовіший
+- - 76.9% замовлень оплачено кредитною карткою, 19.9% — boleto (бразильський банківський рахунок).
 
 SELECT
 	payment_type,
