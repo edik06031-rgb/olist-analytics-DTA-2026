@@ -86,6 +86,7 @@ WHERE order_status = 'delivered' AND order_delivered_6 is not NULL;
 
 
 --  розподіл способів оплати. 
+-- ми бачимо що способ оплати кредитною картою наймассовіший
 
 SELECT
 	payment_type,
